@@ -51,22 +51,40 @@ for(let i = 0; i < historyBtns.length; i++) {
 
 function retrieve_data(event){
   console.log("in retrive data function")
-  getData('https://6b97-130-113-109-194.ngrok.io/history')
+  getData('https://6b97-130-113-109-194.ngrok.io/tracking')
 }
 
 async function getData(url = ' '){
   console.log("in get Data")
-  const response = await fetch(url, {
+  await fetch(url, {
     method: 'GET',
     // mode: 'no-cors',
     cache: 'no-cache',
     credentials: 'same-origin',
     redirect: 'follow',
     referrerPolicy: 'no-referrer',
-  });
-  console.log(response)
+  })
+  .then(function(response){
+    return response.json();
+  })
+  .then(function(data){
+    appendData(data);
+    console.log(data);
+  })
+  // console.log(response)
+  // return response.json();
+}
 
-  return response.text();
+function appendData(data) {
+  // make it pretty: https://www.w3schools.com/html/html_tables.asp
+  console.log("in append data")
+  var mainContainer = document.getElementById("myData");
+  console.log("date length "+data.length)
+  for (var i = 0; i < data.length; i++) {
+    var div = document.createElement("div");
+    div.innerHTML = 'Item: ' + data[i].name + ' Platform: ' + data[i].platform + ' Buy Price ' + data[i].price;
+    mainContainer.appendChild(div);
+  }
 }
 
 
