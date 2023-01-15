@@ -5,6 +5,7 @@ import json
 import pyshorteners
 from dotenv import load_dotenv
 import os
+import autoBuy
 
 load_dotenv()
 
@@ -66,20 +67,35 @@ def sms_replies():
 
 
     number = request.form["From"]
-    message_body = request.form["Body"]
-
+    messageBody = request.form["Body"]
+    
     # Start our TwiML response
     response = MessagingResponse()
 
-    # Add a text message
-    msg = response.message(number)
+    with open('purchases.json') as db:
+        purchases = json.load(db)
+
+    if messageBody in purchases.keys():
+        autoBuy.Mockbuy(purchases[messageBody])
+        msg = response.message("Will do! Purchase will be made")
+    else:
+        msg = response.message("I'm sorry I didn't quite catch that")
+    
     return Response(str(response), mimetype="text/xml")
 
-@app.route("/history", methods=["GET", "POST"])
-def getHistory():
-    test_data = {"Sheridan": "Fong"}
-    test_data = json.dumps(test_data)
-    return Response(response=test_data, mimetype="application/json")
+@app.route("/tracking", methods=["GET", "POST"])
+def getTracking():
+    with open('productRecords.json') as db:
+        tracking = json.load(db)
+    
+    jsonPacket = []
+    for link, data in tracking.items():
+        tmp = {"link": link}
+        tmp = tmp | data
+        jsonPacket.append(tmp) 
+    
+    jsonPacket = json.dumps(jsonPacket)
+    return Response(response=jsonPacket, mimetype="application/json")
 
 if __name__ == "__main__":
     app.run(debug=True)

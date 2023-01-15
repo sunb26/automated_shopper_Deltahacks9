@@ -6,6 +6,7 @@ import time
 import json
 import os
 from dotenv import load_dotenv
+import random
 
 
 load_dotenv()
@@ -14,8 +15,18 @@ purchase = {}
 
 def extract_walmart_price(driver, url):
     driver.get(url)
-    cost = driver.find_element(By.XPATH, r'//*[@id="main-buybox"]/div[1]/div[4]/div/div[1]/div/div/div/span/span').text
+    pause = random.randint(5, 10)
+    time.sleep(pause)
+    cost = driver.find_element(By.XPATH, '//*[@id="main-buybox"]/div[1]/div[3]/div/div[1]/div/div/div/span/span').text
+    cost = cost[1:]
+    return cost
 
+def extract_nofrills_price(driver, url):
+    driver.get(url)
+    pause = random.randint(3, 10)
+    time.sleep(pause)
+    cost = driver.find_element(By.XPATH, '//*[@id="site-content"]/div/div/div[2]/div[2]/div[2]/div/div/div[2]/div/div[1]/div/div/div/span/span[1]').text
+    cost = cost[1:]
     return cost
 
 def extract_amazon_price(driver, url):
@@ -34,7 +45,7 @@ def notification(cost, name, platform):
 
     message = client.messages.create(
                               body=f""" Hey Good News! {name} has dropped to {cost} on {platform}!
-                              \nGo Get It Now or reply to this text with "BUY" to automatically purchase it!
+                              \nGo Get It Now or reply to this text with "{name}" to automatically purchase it!
                               """,
                               from_=twilio_num,
                               to=receiver
@@ -76,12 +87,35 @@ def main():
                     if float(cost) <= float(price):
                         notification(cost, name, platform)
                         purchase[name] = link
+                        purchase["platform"] = platform
+                        productRecords.pop(link)
+                        writeJSON(productRecords)
+                        writeJSON(purchase, "purchases.json")
+                        break
+                
+                if platform == "Walmart":
+                    cost = extract_walmart_price(driver, link)
+                    if float(cost) <= float(price):
+                        notification(cost, name, platform)
+                        purchase[name] = link
+                        purchase["platform"] = platform
+                        productRecords.pop(link)
+                        writeJSON(productRecords)
+                        writeJSON(purchase, "purchases.json")
+                        break
+                
+                if platform == "No Frills":
+                    cost = extract_nofrills_price(driver, link)
+                    if float(cost) <= float(price):
+                        notification(cost, name, platform)
+                        purchase[name] = link
+                        purchase["platform"] = platform
                         productRecords.pop(link)
                         writeJSON(productRecords)
                         writeJSON(purchase, "purchases.json")
                         break
 
-            time.sleep(10)
+            time.sleep(random.randint(2, 10))
             driver.close()
         time.sleep(2)
 
