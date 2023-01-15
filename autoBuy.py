@@ -1,35 +1,62 @@
-from blockchain import blockchain
+from blockchain import Blockchain
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from dotenv import load_dotenv
 import os
-import time
+from flask import Flask, request
+import json
 import random
+import time
 
 
 load_dotenv()
-password = os.environ["PASSWORD"]
 
-# def buyAmazon(url):
-#     driver = webdriver.Chrome(r"C:\Users\bsun7\OneDrive\Documents\chromedriver\chromedriver.exe")
-#     driver.get(url)
-#     time.sleep(15)
-#     driver.find_element(By.ID, "buy-now-button").click()
-#     time.sleep(300)
 
-# def buyNoFrills(url):
-#     driver = webdriver.Chrome(r"C:\Users\bsun7\OneDrive\Documents\chromedriver\chromedriver.exe")
-#     driver.get(url)
-#     pause = random.randint(5, 10)
-#     time.sleep(pause)
-#     driver.find_element(By.XPATH, '//*[@id="site-content"]/div/div/div[2]/div[2]/div[2]/div/div/div[2]/div/div[3]/div[3]/button').click()
-#     time.sleep(50)
+blockchain = Blockchain()
 
 def Mockbuy(name, url):
-    transaction = f"purchased {name}"
+    driver = webdriver.Chrome(r"C:\Users\bsun7\OneDrive\Documents\chromedriver\chromedriver.exe")
+    driver.get(url)
+    pause = random.randint(3, 5)
+    time.sleep(pause)
+    driver.find_element(By.ID, 'buy-btn').click()
+    time.sleep(pause)
+    name = driver.find_element(By.ID, 'name')
+    name.send_keys("Benjamin Sun")
+    time.sleep(1)
+    address = driver.find_element(By.ID, 'address')
+    address.send_keys("176 Haddon Ave S")
+    time.sleep(1)
+    card_num = driver.find_element(By.ID, 'card-num')
+    card_num.send_keys("111111111111")
+    time.sleep(1)
+    card_exp = driver.find_element(By.ID, 'card-exp')
+    card_exp.send_keys("12/22")
+    time.sleep(1)
+    cvv = driver.find_element(By.ID, 'card-cvv')
+    cvv.send_keys("133")
+    time.sleep(1)
+    driver.find_element(By.ID, 'place-order').click()
+    time.sleep(5)
+
+    transaction = f"Benjamin Sun purchased {name}"
     blockchain.create_block_from_transaction([transaction])
 
-#buyAmazon("https://www.amazon.ca/Squishmallow-Stuffed-Animal-Cuddle-Pillow/dp/B09QZ4X7ZV/ref=sr_1_1_sspa?crid=1FYB8GXU69HJ5&keywords=fox+squishmallow&qid=1673772947&sprefix=fox++sq%2Caps%2C87&sr=8-1-spons&psc=1&spLa=ZW5jcnlwdGVkUXVhbGlmaWVyPUEyS1BUUjhIODEySzlLJmVuY3J5cHRlZElkPUEwMzE0MzgyMlRMTlU5VjVZTEM5UyZlbmNyeXB0ZWRBZElkPUEwMDk3MTk0MTI3QVVYVk1XT1lUSCZ3aWRnZXROYW1lPXNwX2F0ZiZhY3Rpb249Y2xpY2tSZWRpcmVjdCZkb05vdExvZ0NsaWNrPXRydWU=")
-#buyNoFrills("https://www.nofrills.ca/scented-jasmine-rice/p/20121871_EA")           
+app = Flask(__name__)
 
-Mockbuy("Lego", "http://127.0.0.1:5500/Website/lego-website.html")
+
+@app.route('/chain', methods=['GET'])
+def get_chain():
+    chain_data = []
+    hashes = []
+    for block in blockchain.chain:
+        chain_data.append(block.block_data)
+        hashes.append(block.block_hash)
+    
+    return json.dumps({"length": len(chain_data),
+                       "chain": chain_data,
+                       "hash": hashes})
+
+
+
+app.run(debug=True, port=8080)

@@ -77,6 +77,7 @@ def main():
 
         if productRecords:
             driver = webdriver.Chrome(r"C:\Users\bsun7\OneDrive\Documents\chromedriver\chromedriver.exe")
+            time.sleep(2)
             for link in productRecords.keys():
                 platform = productRecords[link]["platform"]
                 price = productRecords[link]["price"]

@@ -76,7 +76,7 @@ def sms_replies():
         purchases = json.load(db)
 
     if messageBody in purchases.keys():
-        autoBuy.Mockbuy(purchases[messageBody])
+        autoBuy.Mockbuy(messageBody, purchases[messageBody])
         msg = response.message("Will do! Purchase will be made")
     else:
         msg = response.message("I'm sorry I didn't quite catch that")
@@ -98,4 +98,4 @@ def getTracking():
     return Response(response=jsonPacket, mimetype="application/json")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5000)

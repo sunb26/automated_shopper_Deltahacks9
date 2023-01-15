@@ -1,7 +1,7 @@
 """
 A simple Blockchain in Python
 """
-from flask import Flask, request
+
 import hashlib
 import json
 
@@ -36,22 +36,8 @@ class Blockchain:
     @property
     def last_block(self):
         return self.chain[-1]
-
-app = Flask(__name__)
-blockchain = Blockchain()
-
-
-@app.route('/chain', methods=['GET'])
-def get_chain():
-    chain_data = []
-    hashes = []
-    for block in blockchain.chain:
-        chain_data.append(block.block_data)
-        hashes.append(block.block_hash)
-    return json.dumps({"length": len(chain_data),
-                       "chain": chain_data,
-                       "hash": hashes})
+    
+    def __del__(self):
+        print("Chain Deleted")
 
 
-
-app.run(debug=True, port=8080)
