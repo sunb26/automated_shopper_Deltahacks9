@@ -37,12 +37,40 @@ function handleFormSubmit(event) {
   });
 }
 
-
+console.log("hello")
 const form = document.querySelector('.item-form');
 form.addEventListener('submit', handleFormSubmit);
 
 // Create a get request
+const historyBtns = document.getElementsByClassName('history_btn')
 
-fetch('https://6b97-130-113-109-194.ngrok.io/history',{method: 'GET', mode: 'no-cors'})
-  // .then((response) => response.json())
-  .then((json) => console.log(json));
+for(let i = 0; i < historyBtns.length; i++) {
+
+  historyBtns[i].addEventListener('click', retrieve_data);
+}
+
+function retrieve_data(event){
+  console.log("in retrive data function")
+  getData('https://6b97-130-113-109-194.ngrok.io/history')
+}
+
+async function getData(url = ' '){
+  console.log("in get Data")
+  const response = await fetch(url, {
+    method: 'GET',
+    // mode: 'no-cors',
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer',
+  });
+  console.log(response)
+
+  return response.text();
+}
+
+
+// original code
+// await fetch('https://6b97-130-113-109-194.ngrok.io/history',{method: 'GET', mode: 'no-cors'})
+//   // .then((response) => response.json())
+//   .then((incoming_data) => console.log(incoming_data));
