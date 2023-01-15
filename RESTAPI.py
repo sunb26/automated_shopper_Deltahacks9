@@ -6,8 +6,8 @@ import pyshorteners
 
 app = Flask(__name__)
 
-account_sid = "ACf8a80465852a8535b32186898182541c"
-auth_token = "c08cf43facecf3900d5eab9ec694bbe9"
+account_sid = ""
+auth_token = ""
 client = Client(account_sid, auth_token)
 productRecords = {}
 
@@ -45,8 +45,8 @@ def register_alert():
                               \nLink: {link}
                               \nDesired Price: {strike_price}
                               """,
-                              from_='+13854816902',
-                              to='+12894393109'
+                              from_='',
+                              to=''
     )
 
     print(productRecords)

@@ -21,16 +21,16 @@ def extract_amazon_price(driver, url):
     return cost
 
 def notification(cost, name, platform):
-    account_sid = "ACf8a80465852a8535b32186898182541c"
-    auth_token = "c08cf43facecf3900d5eab9ec694bbe9"
+    account_sid = ""
+    auth_token = ""
     client = Client(account_sid, auth_token)
 
     message = client.messages.create(
                               body=f""" Hey Good News! {name} has dropped to {cost} on {platform}!
                               Go Get It Now or reply to this text with "BUY" to automatically purchase it!
                               """,
-                              from_='+13854816902',
-                              to='+12894393109'
+                              from_='',
+                              to=''
     )
 
 def writeJSON(productRecords):
@@ -72,8 +72,9 @@ def main():
                         productRecords.pop(link)
                         writeJSON(productRecords)
 
-            driver.close()
             time.sleep(10)
+            driver.close()
+            time.sleep(2)
 
 
 
