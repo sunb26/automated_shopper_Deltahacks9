@@ -3,11 +3,19 @@ from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
 import json
 import pyshorteners
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 
 app = Flask(__name__)
 
-account_sid = ""
-auth_token = ""
+account_sid = os.environ["ACCOUNT_SID"]
+auth_token = os.environ["AUTH_TOKEN"]
+twilio_num = os.environ["TWILIO_NUM"]
+receiver = os.environ["RECIEVER"]
+
 client = Client(account_sid, auth_token)
 productRecords = {}
 
@@ -45,8 +53,8 @@ def register_alert():
                               \nLink: {link}
                               \nDesired Price: {strike_price}
                               """,
-                              from_='',
-                              to=''
+                              from_= twilio_num,
+                              to=receiver
     )
 
     print(productRecords)
@@ -69,8 +77,8 @@ def sms_replies():
 
 @app.route("/history", methods=["GET"])
 def getHistory():
-    test_data = {"data": "HEllo!"}
-    return jsonify(test_data)
+    test_data = {"data": "Hello!"}
+    return Response(response=test_data, mimetype="application/json")
 
 if __name__ == "__main__":
     app.run(debug=True)
