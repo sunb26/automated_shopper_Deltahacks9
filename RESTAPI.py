@@ -4,8 +4,8 @@ from twilio.twiml.messaging_response import MessagingResponse
 
 app = Flask(__name__)
 
-account_sid = "ACdf6042ed2d58404d0045d856f1abbfd4"
-auth_token = "b3b09258529c938c47ee892789fffff5"
+account_sid = ""
+auth_token = ""
 client = Client(account_sid, auth_token)
 
 
@@ -14,9 +14,11 @@ def register_alert():
     name = request.form["From"]
     message = client.messages.create(
                               body=f'Hi {name}! You have created an alert for',
-                              from_='+19705755093',
-                              to='+12894393109'
+                              from_='',
+                              to=''
                           )
+    
+    return Response()
 
 @app.route("/sms", methods=['POST'])
 def sms_replies():
