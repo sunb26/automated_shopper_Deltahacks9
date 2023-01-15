@@ -6,11 +6,11 @@ import time
 import json
 import os
 from dotenv import load_dotenv
-from collections import deque
+
 
 load_dotenv()
 
-q = deque()
+purchase = {}
 
 def extract_walmart_price(driver, url):
     driver.get(url)
@@ -40,12 +40,12 @@ def notification(cost, name, platform):
                               to=receiver
     )
 
-def writeJSON(productRecords):
+def writeJSON(productRecords, name="productRecords.json"):
     # Serializing json
     json_object = json.dumps(productRecords, indent=4)
     
     # Writing to sample.json
-    with open("productRecords.json", "w") as outfile:
+    with open(name, "w") as outfile:
         outfile.write(json_object)
 
 def main():
@@ -75,8 +75,10 @@ def main():
                     cost = extract_amazon_price(driver, link)
                     if float(cost) <= float(price):
                         notification(cost, name, platform)
+                        purchase[name] = link
                         productRecords.pop(link)
                         writeJSON(productRecords)
+                        writeJSON(purchase, "purchases.json")
                         break
 
             time.sleep(10)

@@ -62,7 +62,7 @@ def register_alert():
 
 @app.route("/sms", methods=['POST'])
 def sms_replies():
-    """Respond to incoming calls with a MMS message."""
+    """Respond to incoming calls with a SMS message."""
 
 
     number = request.form["From"]
@@ -75,10 +75,11 @@ def sms_replies():
     msg = response.message(number)
     return Response(str(response), mimetype="text/xml")
 
-@app.route("/history", methods=["GET"])
+@app.route("/history", methods=["GET", "POST"])
 def getHistory():
-    test_data = "sheridan,fong"
-    return Response(response=test_data, status=200)
+    test_data = {"Sheridan": "Fong"}
+    test_data = json.dumps(test_data)
+    return Response(response=test_data, mimetype="application/json")
 
 if __name__ == "__main__":
     app.run(debug=True)
