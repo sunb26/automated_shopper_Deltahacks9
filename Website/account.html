@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Patient Medical History</title>
+  <title>My Account</title>
   <link rel="icon" href="favicon.ico">
   <!-- loading in bootstrap and my css stylesheet -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
@@ -11,7 +11,7 @@
   <!-- JS -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
-
+  <!-- <script src="scripts/methods.js"></script> -->
   <!-- linking fonts - ubuntu and monteserrat -->
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Ubuntu&display=swap" rel="stylesheet">
@@ -32,7 +32,7 @@
 
       <nav class="navbar navbar-expand-lg navbar-light">
 
-        <a class="navbar-brand" href="index.html"><b>ShopBuddy</b></a>
+        <a class="navbar-brand" href="index.html"><b>Shop Buddy</b></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -45,7 +45,7 @@
               <a class="nav-link" href="#footer">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#pricing">FAQ</a>
+              <a class="nav-link" href="FAQ.html">FAQ</a>
             </li>
 
             <li class="nav-item">
@@ -60,7 +60,7 @@
         <div class="col-lg-6">
           <h1 class="big-heading">Simplify Savings. Track. Notify. Purchase.</h1>
           <a class="btn btn-dark btn-lg download-btn" href="#new-item" role="button"><i class="fas fa-user-friends"></i> Update</a>
-          <a class="btn btn-dark btn-lg download-btn" href="#tracking-history" role="button"><i class="fas fa-hospital-user"></i> History</a>
+          <a class="btn btn-dark btn-lg download-btn" type="history" href="#tracking-history" role="button"><i class="fas fa-hospital-user"></i> History</a>
         </div>
         <div class="col-lg-6" >
           <img class="title-image" src="images/robot.png" alt="robot">
@@ -72,37 +72,48 @@
     </div>
   </section>
 
-  <!-- New item -->
-  <section class="white-section" id="new-item">
+  <!-- Add item -->
+  <section class="white-section item-form" id="new-item">
     <div class="container-fluid white-section">
-      <h2 class="section-heading">Medical History</h2>
+      <h2 class="section-heading">Track a New Item</h2>
 
-      <form id="form-user" action="#" method="post">
 
-        <!-- Name input -->
+<!-- Creating a form -->
+      <form id="form-item">
+
+        <!-- Product Name -->
         <div class="form-group" data-errormsg="">
-          <label for="exampleFormControlTextarea1">Health Card Number</label>
-          <textarea type="text" name="health_num2"class="form-control" id="exampleFormControlTextarea1" placeholder="5584-486-674-XX" rows="1"></textarea>
+          <label for="item-link">Product Name</label>
+          <textarea type="text" name="product-name"class="form-control" id="item-link" placeholder="Lego Bouquet" rows="1"></textarea>
         </div>
 
-        <!-- Category -->
+        <!-- Product Link Input -->
+        <div class="form-group" data-errormsg="">
+          <label for="item-link">Product Link</label>
+          <textarea type="text" name="item-link"class="form-control" id="item-link" placeholder="https://www.amazon.ca/LEGO-Bouquet" rows="1"></textarea>
+        </div>
+
+        <!-- Buy Price-->
         <div class="form-group">
-          <label for="exampleFormControlSelect1">Categories</label>
-          <select name="category2" class="form-control" id="exampleFormControlSelect1">
-            <option>Family_History</option>
-            <option>Injuries_and_Symptoms_Log</option>
-            <option>Prescriptions</option>
-            <option>Mental_Health_Log</option>
-            <option>Miscellaneous_Notes</option>
+          <label for="exampleFormControlSelect1">Buy Price ($CAD)</label>
+          <textarea type="text" name="buy-price"class="form-control" id="exampleFormControlTextarea1" placeholder="10.00" rows="1"></textarea>
+        </div>
+
+        <!-- Website -->
+        <div class="form-group">
+          <label for="exampleFormControlSelect1">Website</label>
+          <select name="website-name" class="form-control" id="exampleFormControlSelect1">
+            <option>Amazon</option>
+            <option>Costco</option>
           </select>
         </div>
 
-        <!-- Update textarea -->
+        <!-- Date -->
         <div>
-          <label for="date">Date</label>
+          <label for="date">Stop Tracking Item on</label>
         </div>
         <div>
-          <input type="date" name="date2" id="exampleFormControlInput1" min="1920-06-10" style="margin-bottom: 2%">
+          <input type="date" name="expiry-date" id="exampleFormControlInput1" min="1920-06-10" style="margin-bottom: 2%">
         </div>
 
         <!-- Checking to see if the person agrees to submitting correct info -->
@@ -113,8 +124,10 @@
 
         <div class="form-box">
           <button class="btn btn-dark" id="button-cancel">Cancel</button>
-          <button class="btn btn-outline-primary" id="button-send" href="Medical-History-Page.html">Get Information</button>
+          <button class="btn btn-outline-primary" id="btnSubmit" type="submit">Submit</button>
         </div>
+
+
 
       </form>
 
@@ -130,8 +143,9 @@
 
     <div class=container-fluid>
 
-      <h3 class="cta-heading">See if your doctor uses Patient2Doctor today.</h3>
-      <button class="btn btn-outline-light btn-lg download-btn button-cta"><i class="fas fa-hospital-user"></i> Find Your Doctor</button>
+      <h3 class="cta-heading">Items You Are Tracking.</h3>
+      <a class="btn btn-dark btn-lg download-btn" type="history" href="#tracking-history" role="button"><i class="fas fa-hospital-user"></i> History</a>
+      <!-- <button class="btn btn-outline-light btn-lg download-btn button-cta"><i class="fas fa-hospital-user"></i> Find Your Doctor</button> -->
 
     </div>
   </section>
@@ -146,10 +160,10 @@
     <i class="fab fa-instagram icon-footer"></i>
     <i class="fas fa-envelope icon-footer"></i>
 
-    <p>© Copyright 2020 Patient2Doctor</p>
+    <p>© Copyright 2023 ShopBuddy</p>
   </footer>
 
-
+  <script src="scripts/methods.js"></script>
 </body>
 
 </html>
