@@ -1,24 +1,56 @@
-from flask import Flask, Response, request
+from flask import Flask, Response, request, jsonify
 from twilio.rest import Client
 from twilio.twiml.messaging_response import MessagingResponse
+import json
+import pyshorteners
 
 app = Flask(__name__)
 
-account_sid = ""
-auth_token = ""
+account_sid = "ACf8a80465852a8535b32186898182541c"
+auth_token = "c08cf43facecf3900d5eab9ec694bbe9"
 client = Client(account_sid, auth_token)
+productRecords = {}
 
+def shortenURL(url):
+    
+    #Replace url already in records
+
+    #TinyURL shortener service
+    type_tiny = pyshorteners.Shortener()
+    short_url = type_tiny.tinyurl.short(url)
+    
+    return short_url
 
 @app.route("/registeralert", methods=['POST'])
 def register_alert():
-    name = request.form["From"]
-    message = client.messages.create(
-                              body=f'Hi {name}! You have created an alert for',
-                              from_='',
-                              to=''
-                          )
+    name = request.data
+    res_dict = json.loads(name.decode('utf-8'))
+    name = res_dict["product-name"]
+    site = res_dict["website-name"]
+    link = shortenURL(res_dict["item-link"])
+
+
+    strike_price = res_dict["buy-price"]
+    productRecords[link] = {"platform": site, "name": name, "price": strike_price}
+
+    # Serializing json
+    json_object = json.dumps(productRecords, indent=4)
     
-    return Response()
+    # Writing to sample.json
+    with open("productRecords.json", "w") as outfile:
+        outfile.write(json_object)
+
+    message = client.messages.create(
+                              body=f"""Hi! I'm Shop Buddy! You have just set an alert for {name} 
+                              \nLink: {link}
+                              \nDesired Price: {strike_price}
+                              """,
+                              from_='+13854816902',
+                              to='+12894393109'
+    )
+
+    print(productRecords)
+    return Response(status=200, mimetype="text/xml")
 
 @app.route("/sms", methods=['POST'])
 def sms_replies():
@@ -35,6 +67,10 @@ def sms_replies():
     msg = response.message(number)
     return Response(str(response), mimetype="text/xml")
 
+@app.route("/history", methods=["GET"])
+def getHistory():
+    test_data = {"data": "HEllo!"}
+    return jsonify(test_data)
 
 if __name__ == "__main__":
     app.run(debug=True)
