@@ -4,8 +4,13 @@ from selenium.webdriver.common.by import By
 from twilio.rest import Client
 import time
 import json
+import os
+from dotenv import load_dotenv
+from collections import deque
 
+load_dotenv()
 
+q = deque()
 
 def extract_walmart_price(driver, url):
     driver.get(url)
@@ -21,16 +26,18 @@ def extract_amazon_price(driver, url):
     return cost
 
 def notification(cost, name, platform):
-    account_sid = ""
-    auth_token = ""
+    account_sid = os.environ["ACCOUNT_SID"]
+    auth_token = os.environ["AUTH_TOKEN"]
+    twilio_num = os.environ["TWILIO_NUM"]
+    receiver = os.environ["RECIEVER"]
     client = Client(account_sid, auth_token)
 
     message = client.messages.create(
                               body=f""" Hey Good News! {name} has dropped to {cost} on {platform}!
-                              Go Get It Now or reply to this text with "BUY" to automatically purchase it!
+                              \nGo Get It Now or reply to this text with "BUY" to automatically purchase it!
                               """,
-                              from_='',
-                              to=''
+                              from_=twilio_num,
+                              to=receiver
     )
 
 def writeJSON(productRecords):
@@ -47,13 +54,12 @@ def main():
 
     # startup the webdriver
 
-    while True:
+    while True  :
 
         try:
             
             with open('productRecords.json') as db:
                 productRecords = json.load(db)
-                print("User Entries: ", productRecords)
 
         except:
             continue
@@ -67,14 +73,15 @@ def main():
                 
                 if platform == "Amazon":
                     cost = extract_amazon_price(driver, link)
-                    if cost <= price:
+                    if float(cost) <= float(price):
                         notification(cost, name, platform)
                         productRecords.pop(link)
                         writeJSON(productRecords)
+                        break
 
             time.sleep(10)
             driver.close()
-            time.sleep(2)
+        time.sleep(2)
 
 
 
