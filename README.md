@@ -1,8 +1,6 @@
 # Shop Buddy
 DeltaHacks 9 Project
 
-by Ben Sun and Sheridan Fong
-
 Technologies: Python, Selenium, blockchain, CSS, HTML, Javascript, Twilio
 
 # Inspiration
